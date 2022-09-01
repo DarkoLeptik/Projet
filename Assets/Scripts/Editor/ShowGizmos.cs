@@ -6,18 +6,26 @@ public class ShowGizmos : EditorWindow
 {
     SceneGizmoAsset _assetSceneGizmo = null;
     Gizmo[] _gizmos = null;
-
+    Gizmo[] _initialGizmos = null;
 
     [MenuItem("Window/Custom/Show Gizmos")]
     public static void ShowWindow()
     {
         GetWindow(typeof(ShowGizmos));
+
     }
 
     private void OnGUI()
     {
-        _assetSceneGizmo = (SceneGizmoAsset)AssetDatabase.LoadAssetAtPath("Assets/Scripts/Editor/SGA.asset", typeof(SceneGizmoAsset));
+        _assetSceneGizmo = (SceneGizmoAsset)AssetDatabase.LoadAssetAtPath("Assets/Data/Editor/Scene Gizmo Asset.asset", typeof(SceneGizmoAsset));
         _gizmos = _assetSceneGizmo.GetGizmos();
+        _initialGizmos = _assetSceneGizmo.GetGizmos();
+
+        if(Input.GetKeyDown(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Z))
+        {
+            _gizmos = _initialGizmos;
+            Debug.Log("yes");
+        }
 
 
         GUILayout.Label("Gizmo Editor", EditorStyles.boldLabel);
@@ -25,10 +33,12 @@ public class ShowGizmos : EditorWindow
         for( int i = 0; i < _gizmos.Length; i++)
         {
             EditorGUILayout.BeginHorizontal();
-            _gizmos[i].Name = EditorGUILayout.TextField("Text", _gizmos[i].Name, GUILayout.ExpandWidth(true));
-            _gizmos[i].Position.x = EditorGUILayout.FloatField("x", _gizmos[i].Position.x, GUILayout.ExpandWidth(true));
-            _gizmos[i].Position.y = EditorGUILayout.FloatField("y", _gizmos[i].Position.y, GUILayout.ExpandWidth(true));
-            _gizmos[i].Position.z = EditorGUILayout.FloatField("z", _gizmos[i].Position.z, GUILayout.ExpandWidth(true));
+            _gizmos[i].Name = EditorGUILayout.TextField("Text", _gizmos[i].Name);
+            EditorGUILayout.Space();
+            _gizmos[i].Position.x = EditorGUILayout.FloatField("x", _gizmos[i].Position.x);
+            _gizmos[i].Position.y = EditorGUILayout.FloatField("y", _gizmos[i].Position.y);
+            _gizmos[i].Position.z = EditorGUILayout.FloatField("z", _gizmos[i].Position.z);
+            EditorGUILayout.Space();
             if (GUILayout.Button("Edit"))
             {
                 Debug.Log(i);
@@ -39,28 +49,5 @@ public class ShowGizmos : EditorWindow
         
 
         EditorGUILayout.EndVertical();
-    }
-
-
-    public void OnDrawGizmos()
-    {
-#if UNITY_EDITOR
-        Gizmos.color = Color.white;
-        for(int i = 0; i < _gizmos.Length; i++)
-        {
-            Gizmos.DrawSphere(_gizmos[i].Position, 1);
-        }
-#endif
-    }
-
-    public void OnDrawGizmosSelected()
-    {
-#if UNITY_EDITOR
-        Gizmos.color = Color.white;
-        for (int i = 0; i < _gizmos.Length; i++)
-        {
-            Gizmos.DrawSphere(_gizmos[i].Position, 1);
-        }
-#endif
     }
 }
