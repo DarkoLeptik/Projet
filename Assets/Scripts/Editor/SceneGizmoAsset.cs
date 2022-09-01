@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UnityEditor;
+using UnityEngine;
 
 namespace technical.test.editor
 {
@@ -11,6 +12,12 @@ namespace technical.test.editor
         {
             return "Gizmo count : " + _gizmos.Length;
         }
+
+        public Gizmo[] GetGizmos()
+        {
+            return _gizmos;
+        }
+
     }
 
 }

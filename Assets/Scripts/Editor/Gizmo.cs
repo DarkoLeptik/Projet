@@ -15,5 +15,4 @@ namespace technical.test.editor
             Position = position;
         }
     }
-
 }
