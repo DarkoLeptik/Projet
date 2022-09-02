@@ -6,6 +6,7 @@ public class ShowGizmos : EditorWindow
 {
     SceneGizmoAsset _assetSceneGizmo = null;
     Gizmo[] _gizmos = null;
+    //static Gizmo[] _initialGizmos = null;
     static bool _isEditClicked;
     static int _indexGizmoClicked;
 
@@ -15,27 +16,37 @@ public class ShowGizmos : EditorWindow
     public static void Init()
     {
         ShowGizmos windowShowGizmos = GetWindow<ShowGizmos>();
+    }
+
+    void OnEnable()
+    {
         SceneView.duringSceneGui += OnSceneGUI;
+    }
+
+    void OnDisable()
+    {
+        SceneView.duringSceneGui -= OnSceneGUI;
     }
 
     private static void OnSceneGUI(SceneView sceneView)
     {
-        SceneGizmoAsset _asset = (SceneGizmoAsset)AssetDatabase.LoadAssetAtPath("Assets/Data/Editor/Show Gizmos In Scene.asset", typeof(SceneGizmoAsset));
-        Gizmo[] _gizmo = _asset.GetGizmos();
-        for(int i = 0; i < _gizmo.Length; i++)
+        SceneGizmoAsset assetGizmos = (SceneGizmoAsset)AssetDatabase.LoadAssetAtPath("Assets/Data/Editor/Show Gizmos In Scene.asset", typeof(SceneGizmoAsset));
+        Gizmo[] gizmos = assetGizmos.GetGizmos();
+
+        for(int i = 0; i < gizmos.Length; i++)
         {
             Handles.color = Color.white;
-            Handles.SphereHandleCap(0, _gizmo[i].Position, Camera.current.transform.rotation, 0.5f, EventType.Repaint);
+            Handles.SphereHandleCap(0, gizmos[i].Position, Camera.current.transform.rotation, 0.5f, EventType.Repaint);
             Handles.color = Color.black;
-            Handles.DrawLine(_gizmo[i].Position, _gizmo[i].Position + new Vector3(0, 0, 0.25f));
+            Handles.DrawLine(gizmos[i].Position, gizmos[i].Position + new Vector3(0, 0, 0.25f));
             GUI.color = Color.black;
-            Handles.Label(_gizmo[i].Position + new Vector3(0, 0, 0.3f), _gizmo[i].Name);
+            Handles.Label(gizmos[i].Position + new Vector3(0, 0, 0.3f), gizmos[i].Name);
         }
 
         EditorGUI.BeginChangeCheck();
         if (_isEditClicked)
         {
-            _gizmo[_indexGizmoClicked].Position = Handles.PositionHandle(_gizmo[_indexGizmoClicked].Position, Quaternion.identity);
+            gizmos[_indexGizmoClicked].Position = Handles.PositionHandle(gizmos[_indexGizmoClicked].Position, Quaternion.identity);
         }
         if (EditorGUI.EndChangeCheck())
         {
@@ -52,19 +63,17 @@ public class ShowGizmos : EditorWindow
                 menu.ShowAsContext();
             }
         }
-
         HandleUtility.Repaint();
     }
+
     static void ResetPosition(object obj)
     {
         Debug.Log("Reset Position");
-        //
     }
     static void DeleteGizmo(object obj)
     {
         Debug.Log("Delete Gizmo");
     }
-
 
 
     private void OnGUI()
@@ -87,10 +96,7 @@ public class ShowGizmos : EditorWindow
                 _isEditClicked = !_isEditClicked;
             }
             EditorGUILayout.EndHorizontal();
-            
         }
-        
-
         EditorGUILayout.EndVertical();
     }
 }
