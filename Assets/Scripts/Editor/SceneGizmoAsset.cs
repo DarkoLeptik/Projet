@@ -18,6 +18,10 @@ namespace technical.test.editor
             return _gizmos;
         }
 
+        public void SetGizmos(Gizmo[] gizmos)
+        {
+            _gizmos = gizmos;
+        }
     }
 
 }
