@@ -6,11 +6,12 @@ public class ShowGizmos : EditorWindow
 {
     static SceneGizmoAsset _assetSceneGizmo = null;
     static Gizmo[] _gizmos = null;
-    static Gizmo[] _initialGizmos = null;
+    static Gizmo[] _initialGizmos = null; //Get initial gizmos to reset their position with the right click
+    static bool _initializedGizmos = false; //Bool to get initial gizmos only one time
     static bool _isEditClicked;
     static int _indexGizmoEditClicked;
     static int _indexGizmoRightClicked;
-    static bool _initializedGizmos = false;
+    
 
     
 
@@ -34,10 +35,14 @@ public class ShowGizmos : EditorWindow
     {
         _assetSceneGizmo = (SceneGizmoAsset)AssetDatabase.LoadAssetAtPath("Assets/Data/Editor/Show Gizmos In Scene.asset", typeof(SceneGizmoAsset));
         _gizmos = _assetSceneGizmo.GetGizmos();
+
+        //Check if the initial gizmos are already get or not
         if (_initializedGizmos == false)
         {
             _initialGizmos = _gizmos;
         }
+
+        //Draw the shperes and description on the sceneViews
         for(int i = 0; i < _gizmos.Length; i++)
         {
             Handles.color = Color.white;
@@ -48,6 +53,7 @@ public class ShowGizmos : EditorWindow
             Handles.Label(_gizmos[i].Position + new Vector3(0, 0, 0.3f), _gizmos[i].Name);
         }
 
+        //Logic arount edit Button in EditorWindow
         EditorGUI.BeginChangeCheck();
         if (_isEditClicked)
         {
@@ -80,12 +86,10 @@ public class ShowGizmos : EditorWindow
                     break;
                 }
         }
-        //Debug.Log(_initialGizmos[0].Position);
-        //Debug.Log(_gizmos[0].Position);
-        Debug.Log(_initializedGizmos);
         HandleUtility.Repaint();
     }
 
+    //Callbacks of the menu items when right clicking on gizmo in sceneView
     static void ResetPosition(object obj)
     {
         _gizmos[_indexGizmoRightClicked].Position = _initialGizmos[_indexGizmoRightClicked].Position;
@@ -112,12 +116,21 @@ public class ShowGizmos : EditorWindow
         _assetSceneGizmo = (SceneGizmoAsset)AssetDatabase.LoadAssetAtPath("Assets/Data/Editor/Show Gizmos In Scene.asset", typeof(SceneGizmoAsset));
         _gizmos = _assetSceneGizmo.GetGizmos();
 
+        //Draw Infos of gizmos in the EditorWindow
         GUILayout.Label("Gizmo Editor", EditorStyles.boldLabel);
         EditorGUILayout.BeginVertical();
         for( int i = 0; i < _gizmos.Length; i++)
         {
+            if(i == _indexGizmoEditClicked && _isEditClicked)
+            {
+                GUI.color = Color.red;
+            }
+            else
+            {
+                GUI.color = Color.white;
+            }
             EditorGUILayout.BeginHorizontal();
-            _gizmos[i].Name = EditorGUILayout.TextField("Text", _gizmos[i].Name, GUILayout.Width(200));
+            _gizmos[i].Name = EditorGUILayout.TextField("Text", _gizmos[i].Name);
             _gizmos[i].Position.x = EditorGUILayout.FloatField("x", _gizmos[i].Position.x, GUILayout.Width(200));
             _gizmos[i].Position.y = EditorGUILayout.FloatField("y", _gizmos[i].Position.y, GUILayout.Width(200));
             _gizmos[i].Position.z = EditorGUILayout.FloatField("z", _gizmos[i].Position.z, GUILayout.Width(200));
@@ -129,5 +142,11 @@ public class ShowGizmos : EditorWindow
             EditorGUILayout.EndHorizontal();
         }
         EditorGUILayout.EndVertical();
+    }
+
+    //Repaint every frame even if it doesn't have to focus (to perform well when we change position on sceneView or when we delete a gizmo)
+    private void Update()
+    {
+        Repaint();
     }
 }
