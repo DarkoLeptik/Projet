@@ -58,6 +58,7 @@ public class ShowGizmos : EditorWindow
     static void ResetPosition(object obj)
     {
         Debug.Log("Reset Position");
+        //
     }
     static void DeleteGizmo(object obj)
     {
