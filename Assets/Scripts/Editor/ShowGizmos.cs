@@ -104,7 +104,6 @@ public class ShowGizmos : EditorWindow
             }
         }
         _assetSceneGizmo.SetGizmos(gizmos);
-        _gizmosChanged = true;
     }
 
     private void OnGUI()
