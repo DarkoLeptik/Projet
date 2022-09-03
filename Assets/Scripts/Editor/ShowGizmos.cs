@@ -11,8 +11,8 @@ public class ShowGizmos : EditorWindow
     static bool _isEditClicked;
     static int _indexGizmoEditClicked;
     static int _indexGizmoRightClicked;
-    
 
+    int _spaceBetweenElements = 20;
     
 
     [MenuItem("Window/Custom/Show Gizmos")]
@@ -40,10 +40,11 @@ public class ShowGizmos : EditorWindow
         if (_initializedGizmos == false)
         {
             _initialGizmos = _gizmos;
+            _initializedGizmos = true;
         }
 
         //Draw the shperes and description on the sceneViews
-        for(int i = 0; i < _gizmos.Length; i++)
+        for (int i = 0; i < _gizmos.Length; i++)
         {
             Handles.color = Color.white;
             Handles.SphereHandleCap(0, _gizmos[i].Position, Camera.current.transform.rotation, 0.5f, EventType.Repaint);
@@ -54,14 +55,9 @@ public class ShowGizmos : EditorWindow
         }
 
         //Logic arount edit Button in EditorWindow
-        EditorGUI.BeginChangeCheck();
         if (_isEditClicked)
         {
             _gizmos[_indexGizmoEditClicked].Position = Handles.PositionHandle(_gizmos[_indexGizmoEditClicked].Position, Quaternion.identity);
-        }
-        if (EditorGUI.EndChangeCheck())
-        {
-            
         }
 
         switch (Event.current.type)
@@ -108,8 +104,8 @@ public class ShowGizmos : EditorWindow
             }
         }
         _assetSceneGizmo.SetGizmos(gizmos);
+        _gizmosChanged = true;
     }
-
 
     private void OnGUI()
     {
@@ -119,6 +115,7 @@ public class ShowGizmos : EditorWindow
         //Draw Infos of gizmos in the EditorWindow
         GUILayout.Label("Gizmo Editor", EditorStyles.boldLabel);
         EditorGUILayout.BeginVertical();
+        EditorGUILayout.LabelField("Text");
         for( int i = 0; i < _gizmos.Length; i++)
         {
             if(i == _indexGizmoEditClicked && _isEditClicked)
@@ -130,10 +127,14 @@ public class ShowGizmos : EditorWindow
                 GUI.color = Color.white;
             }
             EditorGUILayout.BeginHorizontal();
-            _gizmos[i].Name = EditorGUILayout.TextField("Text", _gizmos[i].Name);
-            _gizmos[i].Position.x = EditorGUILayout.FloatField("x", _gizmos[i].Position.x, GUILayout.Width(200));
-            _gizmos[i].Position.y = EditorGUILayout.FloatField("y", _gizmos[i].Position.y, GUILayout.Width(200));
-            _gizmos[i].Position.z = EditorGUILayout.FloatField("z", _gizmos[i].Position.z, GUILayout.Width(200));
+            _gizmos[i].Name = EditorGUILayout.TextField(_gizmos[i].Name);
+            EditorGUILayout.Space(_spaceBetweenElements);
+            _gizmos[i].Position.x = EditorGUILayout.FloatField("x", _gizmos[i].Position.x);
+            EditorGUILayout.Space(_spaceBetweenElements);
+            _gizmos[i].Position.y = EditorGUILayout.FloatField("y", _gizmos[i].Position.y);
+            EditorGUILayout.Space(_spaceBetweenElements);
+            _gizmos[i].Position.z = EditorGUILayout.FloatField("z", _gizmos[i].Position.z);
+            EditorGUILayout.Space(_spaceBetweenElements);
             if (GUILayout.Button("Edit"))
             {
                 _indexGizmoEditClicked = i;
