@@ -9,3 +9,7 @@
 # Pour ce qui est du ctrl+z, j'ai pensé dans le update à récupérer les inputs ctrl + z pour remettre une valeur précédente enregistrée mais je suis quasiment sûr que ce n'est pas la bonne méthode et je ne sais même pas comment bien l'implémenter.
 
 # J'ai modifié un peu l'UI de l'EditorWindow pour se rapprocher de la fidélité du modèle.
+
+# LAST UPDATE
+
+# J'ai réessayé plusieurs choses pour le ctrl+z comme des Undo/Redo et des EditorGUI.BeginChangeCheck et EditorGUI.EndChangeCheck mais je ne suis arrivé à rien de concluant. Ainsi, pour le livrable final, il me manque comme vendredi après-midi, le ctrl+z et le reset de position avec le clic droit.
